@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+import scipy.stats as sp
 
 
 def neutral(interest_rate, w_T, Ts, Cs_prev):
