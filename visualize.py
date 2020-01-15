@@ -19,9 +19,7 @@ def plot_C_over_t(Cs_t, results_t, s_title='', scale='log', fname='test'):
 
     plt.figure(figsize=(20, 8))
 
-    # visualize capital changes over time
-    plt.plot(Cs_t, ':', color='black')
-
+    # visualize the events
     for event_ind, color in zip([1, -1], (colors[0], colors[3])):
         inds = np.argwhere(results_t == event_ind)
         plt.plot(inds, Cs_t[inds], '.', color=color, markersize=30)
@@ -31,10 +29,59 @@ def plot_C_over_t(Cs_t, results_t, s_title='', scale='log', fname='test'):
     plt.ylabel('Capital', fontsize=30)
     plt.yscale(scale)
     plt.tick_params(labelsize='x-large')
-    plt.legend(['Lucky', 'Unlucky'])
+    plt.legend(['Lucky event', 'Unlucky event'], fontsize=20)
+    
+    # visualize capital changes over time
+    plt.plot(Cs_t, ':', color='black', label='')
+    
     plt.tight_layout()
 
     if fname:
         plt.savefig(fname + '.png')
 
+    plt.show()
+
+    
+def scatter_talent_capital_P_events(P_events, 
+                                    Cs_dict, 
+                                    Ts_dict, 
+                                    ylim=[10e-11, 10e11], 
+                                    scale='log',
+                                    figsize=(20,7),
+                                    fname='test'):
+
+    """
+    scatter-plot talent-capital relationship for various P_event values
+    :param Cs_dict: Final capital values for all individuals for various P_events (key: P_event)
+    :param Ts_dict: Talent values for all individuals for various P_events (key: P_event)
+    :param ylim: ylim of the plot
+    :param scale: scale
+    :param figsize: figure size
+    :param fname: filename for saving
+    :return:
+    """
+    
+    fig, axes = plt.subplots(1, len(P_events), sharey=True, figsize=figsize)
+    for i, (P_event, ax) in enumerate(zip(P_events, axes)):
+        
+        Cs = Cs_dict[P_event]
+        Ts = Ts_dict[P_event]
+
+        ax.plot(Ts, Cs, '.', alpha=0.5, markersize=5)
+        ax.set_xlim(0.2, 1)
+        ax.set_ylim(ylim)
+        ax.set_xticks([0.2, 0.6, 1])
+        ax.set_yscale(scale)
+        if i == 0:
+            ax.set_title('$P_{event}=$'+str(P_event), fontsize=30)
+        else:
+            ax.set_title(str(P_event), fontsize=30)
+        if i == 0:
+            ax.set_ylabel('Capital', fontsize=30)
+        if i == 2:
+            ax.set_xlabel('Talent', fontsize=30)
+        ax.tick_params(labelsize='x-large')
+
+    plt.tight_layout()
+    plt.savefig(fname+'.png')
     plt.show()
